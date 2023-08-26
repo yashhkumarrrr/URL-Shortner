@@ -45,7 +45,7 @@
     text-transform: capitalize;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 600px) {
     .home-segment {
         padding: 17px;
     }
@@ -64,13 +64,13 @@
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 330px) {
     .home-segment {
         padding: 15px;
     }
 
     .home-heading {
-        font-size: 2.2rem;
+        font-size: 2rem;
     }
 
     .home-textfield {
@@ -86,7 +86,9 @@
 /* Footer */
 
 .footer-body {
+    padding: 2px 0px;
     text-align: center;
+    background-color: rgb(240, 240, 255);
 }
 
 .footer-link {
@@ -94,13 +96,13 @@
     text-decoration: none;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 600px) {
     .footer-body {
         font-size: 0.9rem;
     }
 }
 
-@media (max-width: 400px) {
+@media (max-width: 330px) {
     .footer-body {
         font-size: 0.8rem;
     }

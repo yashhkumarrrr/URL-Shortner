@@ -96,7 +96,6 @@ function Home() {
                                     <TextField
                                         fullWidth
                                         name='input'
-                                        id='home-input'
                                         variant='standard'
                                         onBlur={formik.handleBlur}
                                         value={formik.values.input}
@@ -126,7 +125,6 @@ function Home() {
                                         focused
                                         fullWidth
                                         value={result}
-                                        id='home-output'
                                         variant='outlined'
                                         label='Shorten URL'
                                         InputProps={{
@@ -139,10 +137,11 @@ function Home() {
 
                         <div className='home-btn'>
                             <Button
+                                color='secondary'
                                 id='home-btn-copy'
                                 variant='contained'
-                                color='secondary'
-                                onClick={handleCopy}>
+                                onClick={handleCopy}
+                            >
                                 Copy
                             </Button>
                         </div>
