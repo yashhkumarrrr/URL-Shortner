@@ -5,6 +5,14 @@
   display: none;
 }
 
-.WebApp {
+.WebApp-light {
+  color: black;
   font-family: 'Poppins';
+  background-color: #f5f5f5;
+}
+
+.WebApp-dark {
+  color: white;
+  font-family: 'Poppins';
+  background-color: #0a0a0a;
 }

@@ -2,12 +2,11 @@ import './home.css';
 import axios from 'axios';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import Switch from '@mui/material/Switch';
 import MuiAlert from '@mui/material/Alert';
 import { useState, forwardRef } from 'react';
-import Snackbar from '@mui/material/Snackbar';
-
-import Switch from '@mui/material/Switch';
 import { styled } from '@mui/material/styles';
+import Snackbar from '@mui/material/Snackbar';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
 const Alert = forwardRef(function Alert(props, ref) {
@@ -44,7 +43,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
         },
     },
     '& .MuiSwitch-thumb': {
-        backgroundColor: theme.palette.mode === 'dark' ? '#003892' : '#001e3c',
+        backgroundColor: theme.palette.mode === 'dark' ? '#77589B' : '#77589B',
         width: 32,
         height: 32,
         '&::before': {
@@ -52,8 +51,6 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
             position: 'absolute',
             width: '100%',
             height: '100%',
-            // left: 0,
-            // top: 0,
             backgroundRepeat: 'no-repeat',
             backgroundPosition: 'center',
             backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" width="20" viewBox="0 0 20 20"><path fill="${encodeURIComponent(
@@ -68,7 +65,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     },
 }));
 
-function Home() {
+function Home(props) {
 
     const [open, setOpen] = useState(false);
 
@@ -86,6 +83,7 @@ function Home() {
     const [result, setResult] = useState('');
 
     const logoDark = require('./images/logo-dark.webp')
+    // const logoLight = require('./images/logo-light.webp')
 
     const formik = useFormik({
         initialValues: {
@@ -113,7 +111,7 @@ function Home() {
 
     return (
         <>
-            <div className='WebApp'>
+            <div className={`WebApp-${props.mode}`}>
                 <div>
                     <div className='header'>
                         <div className='header-img'>
@@ -130,6 +128,7 @@ function Home() {
                         <div>
                             <FormControlLabel
                                 id='header-toggle-mode'
+                                onClick={props.toggleMode}
                                 control={<MaterialUISwitch defaultChecked />}
                             />
                         </div>
@@ -168,6 +167,7 @@ function Home() {
 
                     <div className='home-textfield'>
                         <input
+                            readOnly
                             value={result}
                             placeholder='Shorten URL'
                         />
