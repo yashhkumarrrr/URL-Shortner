@@ -9,6 +9,7 @@ import { styled } from '@mui/material/styles';
 import Snackbar from '@mui/material/Snackbar';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
+
 const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
@@ -38,12 +39,12 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
             },
             '& + .MuiSwitch-track': {
                 opacity: 1,
-                backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+                backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#E0E0E0',
             },
         },
     },
     '& .MuiSwitch-thumb': {
-        backgroundColor: theme.palette.mode === 'dark' ? '#77589B' : '#77589B',
+        backgroundColor: theme.palette.mode === 'dark' ? '#77589B' : '#ff2c2c',
         width: 32,
         height: 32,
         '&::before': {
@@ -60,7 +61,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
     },
     '& .MuiSwitch-track': {
         opacity: 1,
-        backgroundColor: theme.palette.mode === 'dark' ? '#8796A5' : '#aab4be',
+        backgroundColor: theme.palette.mode === 'dark' ? '#ff0000' : '#616161',
         borderRadius: 20 / 2,
     },
 }));
@@ -73,7 +74,7 @@ function Home(props) {
         setOpen(true);
     };
 
-    const handleClose = (event, reason) => {
+    const handleClose = (reason) => {
         if (reason === 'clickAway') {
             return;
         }
@@ -82,8 +83,10 @@ function Home(props) {
 
     const [result, setResult] = useState('');
 
+    const copy = require('./images/copy.webp')
+    const submit = require('./images/submit.webp')
     const logoDark = require('./images/logo-dark.webp')
-    // const logoLight = require('./images/logo-light.webp')
+    const logoLight = require('./images/logo-light.webp')
 
     const formik = useFormik({
         initialValues: {
@@ -111,81 +114,104 @@ function Home(props) {
 
     return (
         <>
-            <div className={`WebApp-${props.mode}`}>
-                <div>
-                    <div className='header'>
-                        <div className='header-img'>
-                            <a
-                                target='_blank'
-                                rel='noreferrer'
-                                aria-label="Home"
-                                href='https://yashhkumarrrr.netlify.app'
-                            >
-                                <img className='header-logo' alt='Logo' src={logoDark} />
-                            </a>
-                        </div>
+            <div className={`body-${props.isDark ? 'dark' : 'light'}`}>
+                <div className='header'>
+                    <div className='header-img'>
+                        <a
+                            target='_blank'
+                            rel='noreferrer'
+                            aria-label="Home"
+                            href='https://yashhkumarrrr.netlify.app'
+                        >
+                            {(props.isDark ?
+                                <img
+                                    alt='Logo'
+                                    src={logoDark}
+                                    className='header-logo'
+                                />
+                                :
+                                <img
+                                    alt='Logo'
+                                    src={logoLight}
+                                    className='header-logo'
+                                />
+                            )}
+                        </a>
+                    </div>
 
-                        <div>
-                            <FormControlLabel
-                                id='header-toggle-mode'
-                                onClick={props.toggleMode}
-                                control={<MaterialUISwitch defaultChecked />}
-                            />
-                        </div>
+                    <div>
+                        <FormControlLabel
+                            id='header-toggle-mode'
+                            control={<MaterialUISwitch
+                                checked={props.isDark}
+                                onChange={props.toggleTheme}
+                            />}
+                        />
                     </div>
                 </div>
 
-                <form onSubmit={formik.handleSubmit} className='home-body'>
+                <form
+                    className='home-body'
+                    onSubmit={formik.handleSubmit}
+                >
                     <div className='home-head'>
                         Shorty URL
                     </div>
 
-                    <div className='home-textfield'>
-                        <input
-                            name='input'
-                            autoComplete='off'
-                            onBlur={formik.handleBlur}
-                            value={formik.values.input}
-                            onChange={formik.handleChange}
-                            placeholder='Paste Your URL Here *'
-                        // helperText={formik.touched.input && formik.errors.input}
-                        // error={formik.touched.input && Boolean(formik.errors.input)}
-                        />
+                    <div className='home-textfield-1'>
+                        <div className={`home-inputarea-${props.isDark ? 'dark' : 'light'}`}>
+                            <input
+                                name='input'
+                                autoComplete='off'
+                                onBlur={formik.handleBlur}
+                                value={formik.values.input}
+                                onChange={formik.handleChange}
+                                placeholder='Paste Your URL Here *'
+                                className={`input-${props.isDark ? 'dark' : 'light'}`}
+                            />
+
+                            <div>
+                                <button
+                                    type='submit'
+                                    className={`home-input-btn-${props.isDark ? 'dark' : 'light'}`}
+                                >
+                                    <img
+                                        src={submit}
+                                        height='30px'
+                                        onClick={formik.handleSubmit}
+                                    />
+                                </button>
+                            </div>
+                        </div>
                         {formik.touched.input &&
                             <div className='contact-form-error'>{formik.errors.input}</div>
                         }
                     </div>
 
-                    <div className='home-btn'>
-                        <button
-                            type='submit'
-                            className='contact-form-btn'
-                        >
-                            Submit
-                        </button>
-                    </div>
-
-                    <div className='home-textfield'>
+                    <div className={`home-inputarea-${props.isDark ? 'dark' : 'light'}`}>
                         <input
                             readOnly
                             value={result}
+                            name='Shorten URL'
                             placeholder='Shorten URL'
+                            className={`input-${props.isDark ? 'dark' : 'light'}`}
                         />
-                    </div>
 
-                    <div className='home-btn'>
-                        <button
-                            id='home-btn-copy'
-                            onClick={handleCopy}
-                        >
-                            Copy
-                        </button>
+                        <div>
+                            <button
+                                className={`home-input-btn-${props.isDark ? 'dark' : 'light'}`}
+                            >
+                                <img
+                                    src={copy}
+                                    height='30px'
+                                    onClick={handleCopy}
+                                />
+                            </button>
+                        </div>
                     </div>
                 </form>
 
-                <div
-                    className='footer'
-                >
+                <div className='footer'>
                     Developed by -&nbsp;
                     <a
                         target='_blank'

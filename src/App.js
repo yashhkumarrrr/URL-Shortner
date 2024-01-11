@@ -1,25 +1,20 @@
-import { useState } from 'react';
 import './App.css';
 import Home from './components/home';
+import useLocalStorage from 'use-local-storage';
 import { BrowserRouter } from 'react-router-dom';
 
 function App() {
 
-  const [mode, setMode] = useState('dark');
+  const [isDark, setIsDark] = useLocalStorage('isDark', true)
 
-  const toggleMode = () => {
-    if (mode === 'light') {
-      setMode('dark')
-    }
-    else if (mode === 'dark') {
-      setMode('light')
-    }
+  const toggleTheme = () => {
+    setIsDark(!isDark)
   }
 
   return (
     <>
       <BrowserRouter>
-        <Home mode={mode} toggleMode={toggleMode} />
+        <Home isDark={isDark} toggleTheme={toggleTheme} />
       </BrowserRouter>
     </>
   );
