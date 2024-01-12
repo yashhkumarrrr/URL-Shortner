@@ -68,7 +68,7 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 function Home(props) {
 
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(false)
 
     const handleClick = () => {
         setOpen(true);
@@ -109,7 +109,12 @@ function Home(props) {
     });
 
     const handleCopy = () => {
-        navigator.clipboard.writeText(result);
+        try {
+            navigator.clipboard.writeText(result);
+        }
+        catch (err) {
+            console.log('Error')
+        }
     }
 
     return (
@@ -158,7 +163,7 @@ function Home(props) {
                         Shorty URL
                     </div>
 
-                    <div className='home-textfield-1'>
+                    <div className='home-textfield'>
                         <div className={`home-inputarea-${props.isDark ? 'dark' : 'light'}`}>
                             <input
                                 name='input'
@@ -177,6 +182,7 @@ function Home(props) {
                                 >
                                     <img
                                         src={submit}
+                                        alt='Submit'
                                         height='30px'
                                         onClick={formik.handleSubmit}
                                     />
@@ -188,25 +194,26 @@ function Home(props) {
                         }
                     </div>
 
-                    <div className={`home-inputarea-${props.isDark ? 'dark' : 'light'}`}>
-                        <input
-                            readOnly
-                            value={result}
-                            name='Shorten URL'
-                            placeholder='Shorten URL'
-                            className={`input-${props.isDark ? 'dark' : 'light'}`}
-                        />
+                    <div className='home-textfield'>
+                        <div className={`home-inputarea-${props.isDark ? 'dark' : 'light'}`}>
+                            <input
+                                readOnly
+                                value={result}
+                                name='Shorten URL'
+                                placeholder='Shorten URL'
+                                className={`input-${props.isDark ? 'dark' : 'light'}`}
+                            />
 
-                        <div>
-                            <button
-                                className={`home-input-btn-${props.isDark ? 'dark' : 'light'}`}
-                            >
-                                <img
-                                    src={copy}
-                                    height='30px'
-                                    onClick={handleCopy}
-                                />
-                            </button>
+                            <div>
+                                <button className={`home-input-btn-${props.isDark ? 'dark' : 'light'}`}>
+                                    <img
+                                        src={copy}
+                                        alt='Copy'
+                                        height='30px'
+                                        onClick={handleCopy}
+                                    />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </form>
