@@ -1,14 +1,16 @@
 import './home.css';
 import axios from 'axios';
 import * as yup from 'yup';
+import * as React from 'react';
 import { useFormik } from 'formik';
+import { Link } from 'react-router-dom';
 import Switch from '@mui/material/Switch';
 import MuiAlert from '@mui/material/Alert';
 import { useState, forwardRef } from 'react';
 import { styled } from '@mui/material/styles';
 import Snackbar from '@mui/material/Snackbar';
 import FormControlLabel from '@mui/material/FormControlLabel';
-
+import { Fade } from '@mui/material';
 
 const Alert = forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -68,25 +70,26 @@ const MaterialUISwitch = styled(Switch)(({ theme }) => ({
 
 function Home(props) {
 
-    const [open, setOpen] = useState(false)
+    const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
+    const [successSnackbar, setSuccessSnackbar] = useState(true)
+    const [SnackbarText, setSnackbarText] = useState('')
 
-    const handleClick = () => {
-        setOpen(true);
+    const openSnackbar = () => {
+        setIsSnackbarOpen(true);
     };
 
-    const handleClose = (reason) => {
+    const closeSnackbar = (reason) => {
         if (reason === 'clickAway') {
             return;
         }
-        setOpen(false);
+        setIsSnackbarOpen(false);
     };
 
-    const [result, setResult] = useState('');
+    const [result, setResult] = useState('')
 
     const copy = require('./images/copy.webp')
+    const logo = require('./images/logo.webp')
     const submit = require('./images/submit.webp')
-    const logoDark = require('./images/logo-dark.webp')
-    const logoLight = require('./images/logo-light.webp')
 
     const formik = useFormik({
         initialValues: {
@@ -94,15 +97,23 @@ function Home(props) {
         },
         validationSchema: validationSchema,
         onSubmit: () => {
-            const fetchData = async () => {
-                try {
-                    const res = await axios(`https://api.shrtco.de/v2/shorten?url=${formik.values.input}`);
-                    setResult(res.data.result.full_short_link);
-                }
-                catch (err) {
-                    handleClick();
-                    formik.resetForm();
-                }
+            const fetchData = () => {
+                axios.get(
+                    `https://tinyurl.com/api-create.php?url=${formik.values.input}`
+                )
+                    .then(
+                        (response) => {
+                            setResult(response.data)
+                        }
+                    )
+                    .catch(
+                        () => {
+                            setSuccessSnackbar(false)
+                            SnackbarText('Unable to process the link!')
+                            openSnackbar()
+                            setResult('')
+                        }
+                    )
             }
             fetchData();
         },
@@ -110,61 +121,69 @@ function Home(props) {
 
     const handleCopy = () => {
         try {
-            navigator.clipboard.writeText(result);
+            if (result === '') {
+                setSuccessSnackbar(false)
+                setSnackbarText('Nothing to Copy!')
+                openSnackbar()
+            }
+            else {
+                setSuccessSnackbar(true)
+                setSnackbarText('Successfully Copied!')
+                openSnackbar()
+                navigator.clipboard.writeText(result);
+            }
         }
         catch (err) {
-            console.log('Error')
+            setSuccessSnackbar(false)
+            setSnackbarText('Some Error Occurred!')
+            openSnackbar()
         }
     }
 
     return (
         <>
             <div className={`body-${props.isDark ? 'dark' : 'light'}`}>
-                <div className='header'>
+
+                {/* Header */}
+
+                <div className={`header-${props.isDark ? 'dark' : 'light'}`}>
                     <div className='header-img'>
                         <a
-                            target='_blank'
-                            rel='noreferrer'
+                            href='#home'
                             aria-label="Home"
-                            href='https://yashhkumarrrr.netlify.app'
                         >
-                            {(props.isDark ?
-                                <img
-                                    alt='Logo'
-                                    src={logoDark}
-                                    className='header-logo'
-                                />
-                                :
-                                <img
-                                    alt='Logo'
-                                    src={logoLight}
-                                    className='header-logo'
-                                />
-                            )}
+                            <img
+                                alt='Logo'
+                                src={logo}
+                                className='header-logo'
+                            />
                         </a>
                     </div>
 
-                    <div>
+                    <div className='header-toggle-mode'>
                         <FormControlLabel
-                            id='header-toggle-mode'
+                            id='header-toggle-mode-btn'
                             control={<MaterialUISwitch
                                 checked={props.isDark}
+                                aria-label='Toggle Mode'
                                 onChange={props.toggleTheme}
                             />}
                         />
                     </div>
                 </div>
 
+                {/* Body */}
+
                 <form
-                    className='home-body'
                     onSubmit={formik.handleSubmit}
+                    className={`home-body-${props.isDark ? 'dark' : 'light'}`}
                 >
-                    <div className='home-head'>
+                    <div>
                         Shorty URL
                     </div>
 
-                    <div className='home-textfield'>
-                        <div className={`home-inputarea-${props.isDark ? 'dark' : 'light'}`}>
+                    <div>
+                        <div>
                             <input
                                 name='input'
                                 autoComplete='off'
@@ -172,13 +191,11 @@ function Home(props) {
                                 value={formik.values.input}
                                 onChange={formik.handleChange}
                                 placeholder='Paste Your URL Here *'
-                                className={`input-${props.isDark ? 'dark' : 'light'}`}
                             />
 
                             <div>
                                 <button
                                     type='submit'
-                                    className={`home-input-btn-${props.isDark ? 'dark' : 'light'}`}
                                 >
                                     <img
                                         src={submit}
@@ -190,7 +207,7 @@ function Home(props) {
                             </div>
                         </div>
                         {formik.touched.input &&
-                            <div className='contact-form-error'>{formik.errors.input}</div>
+                            <div>{formik.errors.input}</div>
                         }
                     </div>
 
@@ -201,11 +218,10 @@ function Home(props) {
                                 value={result}
                                 name='Shorten URL'
                                 placeholder='Shorten URL'
-                                className={`input-${props.isDark ? 'dark' : 'light'}`}
                             />
 
                             <div>
-                                <button className={`home-input-btn-${props.isDark ? 'dark' : 'light'}`}>
+                                <button>
                                     <img
                                         src={copy}
                                         alt='Copy'
@@ -218,21 +234,22 @@ function Home(props) {
                     </div>
                 </form>
 
+                {/* Footer */}
+
                 <div className='footer'>
                     Developed by -&nbsp;
-                    <a
+                    <Link
                         target='_blank'
-                        rel='noreferrer'
-                        className='footer-link'
-                        href='https://yashhkumarrrr.netlify.app/'
+                        id='footer-link'
+                        to='https://yashhkumarrrr.netlify.app'
                     >
                         Yash
-                    </a>
+                    </Link>
                 </div>
 
-                <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                        Unable to process the Link
+                <Snackbar open={isSnackbarOpen} autoHideDuration={1500} TransitionComponent={Fade} onClose={closeSnackbar}>
+                    <Alert onClose={closeSnackbar} severity={(successSnackbar) ? 'success' : 'error'} sx={{ width: '100%', fontFamily: 'Poppins'}}>
+                        {SnackbarText}
                     </Alert>
                 </Snackbar>
             </div>
